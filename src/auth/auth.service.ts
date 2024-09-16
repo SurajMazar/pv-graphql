@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../shared/prisma/prisma.service';
-import { JwtAuthService } from '../shared/jwt/jwt.service';
+import { PrismaService } from '../core/prisma/prisma.service';
+import { JwtAuthService } from '../core/jwt/jwt.service';
 import * as E from 'fp-ts/Either';
-import {
-  INTERNAL_SERVER_ERROR,
-  INVALID_CREDENTIALS,
-} from '../shared/constants/status.codes';
+import { INVALID_CREDENTIALS } from '../core/constants/status.codes';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -16,30 +13,23 @@ export class AuthService {
   ) {}
 
   async login(email: string, password: string) {
-    try {
-      const user = await this.prisma.user.findFirst({
-        where: {
-          email,
-        },
-      });
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
 
-      if (!user || !(await bcrypt.compare(password, user.password))) {
-        return E.left({
-          message: 'Invalid Credentials',
-          code: INVALID_CREDENTIALS,
-        });
-      }
-
-      const token = await this.jwt.generateToken(user);
-      return E.right({
-        user,
-        token,
-      });
-    } catch (exception) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return E.left({
-        message: 'Internal Server error',
-        code: INTERNAL_SERVER_ERROR,
+        message: 'Invalid Credentials',
+        code: INVALID_CREDENTIALS,
       });
     }
+
+    const token = await this.jwt.generateToken(user);
+    return E.right({
+      user,
+      token,
+    });
   }
 }

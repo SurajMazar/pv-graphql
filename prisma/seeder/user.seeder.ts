@@ -1,4 +1,4 @@
-import { PrismaService } from '../../src/shared/prisma/prisma.service';
+import { PrismaService } from '../../src/core/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 
 const UserSeeder = async () => {

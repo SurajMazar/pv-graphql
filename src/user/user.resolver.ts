@@ -1,10 +1,11 @@
 import { UserService } from './user.service';
 import { Query, Resolver } from '@nestjs/graphql';
 import { User } from './model/user.model';
-import { Logger } from '@nestjs/common';
-import { handleFailureResponse } from '../shared/utils/response.util';
+import { Logger, UseGuards } from '@nestjs/common';
+import { handleFailureResponse } from '../core/utils/response.util';
 import * as E from 'fp-ts/Either';
-import { BAD_REQUEST } from '../shared/constants/status.codes';
+import { BAD_REQUEST } from '../core/constants/status.codes';
+import { JwtAuthGuard } from '../core/guard/jwt-auth-guard/jwt-auth.guard';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -17,12 +18,14 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => [User])
+  @UseGuards(JwtAuthGuard)
   async users() {
     const users = await this.userService.index();
     if (E.isLeft(users)) {
       return handleFailureResponse(
         'Failed to get user list',
         BAD_REQUEST,
+
         users?.left,
       );
     }
