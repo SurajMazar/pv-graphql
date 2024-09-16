@@ -20,8 +20,12 @@ export class UserResolver {
   async users() {
     const users = await this.userService.index();
     if (E.isLeft(users)) {
-      handleFailureResponse('Failed to get user list', BAD_REQUEST);
+      return handleFailureResponse(
+        'Failed to get user list',
+        BAD_REQUEST,
+        users?.left,
+      );
     }
-    return E.isRight(users) ? users?.right?.users : [];
+    return users?.right?.users;
   }
 }

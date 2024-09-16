@@ -1,5 +1,10 @@
-export const UNAUTHORIZED = 'UNAUTHORIZED' as const;
+export const UNAUTHORIZED = 'UNAUTHORIZED';
 
-export const BAD_REQUEST = 'BAD_REQUEST' as const;
+export const BAD_REQUEST = 'BAD_REQUEST';
 
-export const NOT_FOUND = 'NOT_FOUND' as const;
+export const NOT_FOUND = 'NOT_FOUND';
+
+export const INVALID_CREDENTIALS = 'INVALID_CREDENTIALS';
+
+export const INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR';
+
